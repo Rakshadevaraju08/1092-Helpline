@@ -11,35 +11,22 @@ class GroqService:
         self.api_key = settings.GROQ_API_KEY
         self.base_url = settings.GROQ_BASE_URL
         self.model_name = settings.GROQ_MODEL_NAME
-        
-        # Connection Pooling Optimization: 
-        # Reuse a single HTTP client across all requests to save TCP/TLS handshake time
         self.client = httpx.AsyncClient(timeout=30.0)
-        
-        # Simple In-Memory Cache to prevent duplicate processing
         self.cache: Dict[str, str] = {}
 
     async def generate_summary(self, transcript: str) -> str:
-        """
-        Generate Case Summary using Groq AI
-        """
-
         if not self.api_key:
             return (
                 f"Summary of the case: [MOCK] Citizen reported an issue. "
                 f"Transcript length: {len(transcript)} chars."
             )
 
-        # 1. Cache Check: If we've already summarized this exact transcript, return it instantly
         transcript_hash = str(hash(transcript))
         if transcript_hash in self.cache:
             return self.cache[transcript_hash]
 
-        # 2. Context Truncation: Prevent exceeding token limits by capping the input.
-        # ~6000 chars is roughly 1500 tokens, a safe limit for fast Groq summarization.
         MAX_CHARS = 6000
         if len(transcript) > MAX_CHARS:
-            # Take the most recent/relevant part of the conversation (the end)
             transcript = "..." + transcript[-(MAX_CHARS - 3):]
 
         headers = {
@@ -70,35 +57,30 @@ class GroqService:
             "max_tokens": 200,
         }
 
-        # 3. Retry Logic: AI APIs can blip. We attempt twice before failing.
         max_retries = 2
         for attempt in range(max_retries):
             try:
-                # Reusing the existing connection pool
                 response = await self.client.post(
                     self.base_url,
                     headers=headers,
                     json=payload,
                 )
-
                 response.raise_for_status()
                 data = response.json()
-                
                 summary = data["choices"][0]["message"]["content"]
-                
-                # Save to cache for future duplicate requests
                 self.cache[transcript_hash] = summary
-                
                 return summary
-                
+
             except httpx.HTTPStatusError as e:
                 if attempt == max_retries - 1:
                     logger.error(f"Groq API HTTP error: {e.response.text}")
                     return "Error: Unable to generate summary due to a service error."
-                await asyncio.sleep(1) # wait a second before retrying
-                
+                await asyncio.sleep(1)
+
             except Exception as e:
                 if attempt == max_retries - 1:
                     logger.error(f"Unexpected error communicating with Groq: {e}")
                     return "Error: Failed to process summary."
                 await asyncio.sleep(1)
+
+groq_service = GroqService()
