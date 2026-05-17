@@ -37,8 +37,7 @@ Response: { "text": "Fire hazard", "language": "Kannada", "originalText": "ಬ�
 ```
 
 ## Environment Variables
-Add to `input-service/.env`:
-SARVAM_API_KEY=sk_8burotyr_r6myhPIDI2cWvidJdHIN9K8B
+Add to `input-service/.env`
 
 ## Pipeline Position
 Twilio → backend:5000 → input-service:8001 → ai_service:8000 → Dashboard
