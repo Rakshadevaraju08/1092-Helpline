@@ -6,9 +6,14 @@ This is the intelligence layer of the 1092 Helpline, built with **FastAPI** and 
 
 ## Features
 
+- **Translation & Input Processing (Merged from input-service)**
+  - **Language Detection**: Identifies Kannada, Hindi, Tamil, Telugu, and English.
+  - **Translation**: Converts regional language text to English via Sarvam API.
+  - **Edge Case Validation**: Handles empty texts, short descriptions, and numbers-only inputs.
+
 - **DeBERTa v3 Zeroshot**
-  - **AI Analysis**: Classifies citizen intent and emergency type
-  - **Severity Detection**: Detects severity from LOW to CRITICAL
+  - **AI Analysis**: Classifies citizen intent and emergency type.
+  - **Severity Detection**: Detects severity from LOW to CRITICAL.
 
 - **Google Gemini 2.5 Flash**
   - **AI Reply Generator**: Generates context-aware, calming, safe responses for the caller.
@@ -80,6 +85,9 @@ GROQ_MODEL_NAME="llama-3.3-70b-versatile"
 # Gemini Configuration
 GEMINI_API_KEY="your_gemini_api_key"
 GEMINI_MODEL="gemini-2.5-flash"
+
+# Sarvam Translation API Key (from merged input-service)
+SARVAM_API_KEY="your_sarvam_api_key"
 ```
 
 ---
@@ -123,7 +131,32 @@ Combines Severity detection, Safe Reply generation, and Summarization in a singl
 
 ---
 
-### 2. Analysis Tools
+### 2. Pipeline Input (Merged from input-service)
+
+Validates inputs, detects language, and translates raw regional emergency texts into English.
+
+**Endpoint**: `POST /api/v1/pipeline/input`
+
+**Request Body**:
+```json
+{
+  "text": "ಬೆಂಕಿ ಅಪಾಯ",
+  "originalText": "ಬೆಂಕಿ ಅಪಾಯ"
+}
+```
+
+**Response**:
+```json
+{
+  "text": "Fire hazard",
+  "language": "Kannada",
+  "originalText": "ಬೆಂಕಿ ಅಪಾಯ"
+}
+```
+
+---
+
+### 3. Analysis Tools
 
 #### Text Analysis
 **Endpoint**: `POST /api/v1/analysis/analyze`
@@ -139,7 +172,7 @@ Combines Severity detection, Safe Reply generation, and Summarization in a singl
 
 ---
 
-### 3. Summarization Tools
+### 4. Summarization Tools
 
 #### Case Summarization
 **Endpoint**: `POST /api/v1/summary/summarize`

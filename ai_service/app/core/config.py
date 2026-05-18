@@ -1,5 +1,9 @@
+import os
 from pydantic_settings import BaseSettings
 
+# Build paths inside the project relative to this file
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ENV_PATH = os.path.join(BASE_DIR, ".env")
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "1092 Helpline AI Service"
@@ -18,8 +22,11 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
+    # Sarvam Configuration (from merged input-service)
+    SARVAM_API_KEY: str = ""
+
     class Config:
-        env_file = ".env"
+        env_file = ENV_PATH
+        extra = "ignore"
 
-
-settings = Settings()
+settings = Settings()
