@@ -1,0 +1,23 @@
+{
+  "_comment": "Mock AI reply for testing TTS module without real AI pipeline. Matches output format from Member 2's AI module.",
+  "severity": "HIGH",
+  "reply": "Are you safe right now? We are here to help you. Please tell us your location.",
+  "language": "en",
+  "summary": "Caller reports distress situation",
+  "confidence": 0.94,
+
+  "_examples": {
+    "kannada": {
+      "reply": "ನೀವು ಸುರಕ್ಷಿತವಾಗಿದ್ದೀರಾ? ನಾವು ಸಹಾಯ ಮಾಡಲು ಇಲ್ಲಿದ್ದೇವೆ.",
+      "language": "kn"
+    },
+    "hindi": {
+      "reply": "क्या आप अभी सुरक्षित हैं? हम आपकी मदद के लिए यहाँ हैं।",
+      "language": "hi"
+    },
+    "tamil": {
+      "reply": "நீங்கள் இப்போது பாதுகாப்பாக இருக்கிறீர்களா? நாங்கள் உதவ இங்கே இருக்கிறோம்.",
+      "language": "ta"
+    }
+  }
+}
