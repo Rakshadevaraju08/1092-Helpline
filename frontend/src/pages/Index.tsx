@@ -34,9 +34,9 @@ const Index = () => {
               <Activity size={14} />
               AI-Powered Emergency Response
             </div>
-            <h1 className="text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-8 text-slate-900 tracking-tight">
+             <h1 className="text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-8 text-slate-900 tracking-tight">
               Safety is just <br />
-              <span className="text-primary">one click away.</span>
+              <span className="text-primary">one call away.</span>
             </h1>
             <p className="text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
               Connect instantly with our intelligent responder. 
@@ -44,14 +44,14 @@ const Index = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/sos"
+              <a
+                href="tel:1092"
                 className="group relative h-16 px-10 rounded-2xl bg-primary text-white font-bold text-lg flex items-center justify-center gap-3 overflow-hidden shadow-2xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-900 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Phone size={24} className="relative z-10" />
-                <span className="relative z-10">CALL FOR HELP (SOS)</span>
-              </Link>
+                <span className="relative z-10">DIAL HELPLINE (1092)</span>
+              </a>
 
               <Link
                 to="/login"

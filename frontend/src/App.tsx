@@ -14,7 +14,6 @@ const Analytics = lazy(() => import("./pages/Analytics"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const Index = lazy(() => import("./pages/Index"));
-const SOS = lazy(() => import("./pages/SOS"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -54,7 +53,6 @@ const App = () => {
         <Suspense fallback={<LoadingSpinner text="Loading page..." />}>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/sos" element={<SOS />} />
             <Route path="/login" element={<Login />} />
             <Route
               element={
