@@ -6,9 +6,14 @@ This is the intelligence layer of the 1092 Helpline, built with **FastAPI** and 
 
 ## Features
 
+- **Translation & Input Processing (Merged from input-service)**
+  - **Language Detection**: Identifies Kannada, Hindi, Tamil, Telugu, and English.
+  - **Translation**: Converts regional language text to English via Sarvam API.
+  - **Edge Case Validation**: Handles empty texts, short descriptions, and numbers-only inputs.
+
 - **DeBERTa v3 Zeroshot**
-  - **AI Analysis**: Classifies citizen intent and emergency type
-  - **Severity Detection**: Detects severity from LOW to CRITICAL
+  - **AI Analysis**: Classifies citizen intent and emergency type.
+  - **Severity Detection**: Detects severity from LOW to CRITICAL.
 
 - **Google Gemini 2.5 Flash**
   - **AI Reply Generator**: Generates context-aware, calming, safe responses for the caller.
@@ -80,6 +85,9 @@ GROQ_MODEL_NAME="llama-3.3-70b-versatile"
 # Gemini Configuration
 GEMINI_API_KEY="your_gemini_api_key"
 GEMINI_MODEL="gemini-2.5-flash"
+
+# Sarvam Translation API Key (from merged input-service)
+SARVAM_API_KEY="your_sarvam_api_key"
 ```
 
 ---
@@ -99,18 +107,20 @@ python -m uvicorn app.main:app --reload --port 8001
 
 ## API Endpoints
 
-### 1. Unified Pipeline (Day 2 Final Target)
+### 1. Unified Pipeline (Recommended)
+
+Combines Severity detection, Safe Reply generation, and Summarization in a single concurrent call.
 
 **Endpoint**: `POST /api/v1/pipeline/analyze`
 
-**Request**
+**Request Body**:
 ```json
 {
   "text": "My father hit me"
 }
 ```
 
-**Response**
+**Response**:
 ```json
 {
   "severity": "CRITICAL",
@@ -119,13 +129,75 @@ python -m uvicorn app.main:app --reload --port 8001
 }
 ```
 
-### 2. Individual Analysis Tools
+---
 
+### 2. Pipeline Input (Merged from input-service)
+
+Validates inputs, detects language, and translates raw regional emergency texts into English.
+
+**Endpoint**: `POST /api/v1/pipeline/input`
+
+**Request Body**:
+```json
+{
+  "text": "ಬೆಂಕಿ ಅಪಾಯ",
+  "originalText": "ಬೆಂಕಿ ಅಪಾಯ"
+}
+```
+
+**Response**:
+```json
+{
+  "text": "Fire hazard",
+  "language": "Kannada",
+  "originalText": "ಬೆಂಕಿ ಅಪಾಯ"
+}
+```
+
+---
+
+### 3. Analysis Tools
+
+#### Text Analysis
 **Endpoint**: `POST /api/v1/analysis/analyze`
-**Endpoint**: `POST /api/v1/analysis/severity`
-**Endpoint**: `POST /api/v1/summary/summarize`
+- Generates a general analysis/summary of the input text using Groq.
 
-*(See Swagger docs for more details on individual routes)*
+**Request**: `{ "text": "..." }`
+
+#### Severity Detection
+**Endpoint**: `POST /api/v1/analysis/severity`
+- Specifically classifies the text into `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL` using LLM logic.
+
+**Response**: `{ "severity": "HIGH" }`
+
+---
+
+### 4. Summarization Tools
+
+#### Case Summarization
+**Endpoint**: `POST /api/v1/summary/summarize`
+- Generates a concise summary from a full transcript.
+
+**Request Body**:
+```json
+{
+  "transcript": "Full call transcript text..."
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "summary": "..."
+}
+```
+
+---
+
+## Health Check
+- **Endpoint**: `GET /`
+- Returns service status, version, and active model name.
 
 ---
 

@@ -42,42 +42,46 @@ npm run dev
 ```
 The Node.js server will run on `http://localhost:3000`.
 
-## API Request Examples
+## API Endpoints
 
-### 1. Unified Pipeline (Proxies to Python AI Brain)
-**Endpoint**: `POST /cases/pipeline/analyze`
+All API routes are prefixed with `/api/v1`.
 
-**Request**:
-```json
-{
-  "text": "My father hit me"
-}
-```
-**Response**:
-```json
-{
-  "severity": "CRITICAL",
-  "reply": "I have noted your emergency. Help is being dispatched immediately, please stay safe and on the line.",
-  "summary": "Citizen reported domestic violence from father."
-}
-```
+### 1. Case Management & AI (Proxies to Python AI Service)
 
-### 2. Individual Case Analysis (Proxies to Python AI Brain)
-**Endpoint**: `POST /cases/analyze`
+#### Unified Pipeline
+**Endpoint**: `POST /api/v1/cases/pipeline/analyze`
+- Processes text to get Severity, Safe Reply, and Summary in one call.
 
-**Request**:
-```json
-{
-  "text": "The tree has fallen on the road."
-}
-```
+#### Case Analysis
+**Endpoint**: `POST /api/v1/cases/analyze`
+- Gets text analysis and severity.
 
-### 3. Individual Case Summary (Proxies to Python AI Brain)
-**Endpoint**: `POST /cases/summarize`
+#### Case Summarization
+**Endpoint**: `POST /api/v1/cases/summarize`
+- Generates a summary for a given transcript.
 
-**Request**:
-```json
-{
-  "transcript": "Full call transcript text..."
-}
-```
+---
+
+### 2. Telephony & Call Control
+
+**Base Path**: `/api/v1/telephony`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/incoming-call` | Handles new incoming SOS calls |
+| POST | `/call-status` | Webhook for call status updates |
+| POST | `/forward-agent` | Triggers call forwarding to a human agent |
+| GET | `/health` | Telephony service health check |
+
+---
+
+### 3. Service Health
+
+- **Root**: `GET /`
+- Returns: `{ "message": "1092 Helpline Node.js Backend is running" }`
+
+---
+
+# Author
+
+1092 Helpline Engineering Team
